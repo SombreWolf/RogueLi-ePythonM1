@@ -2,7 +2,7 @@ import random
 
 items = ['branch', 'wood shield', 'meat', 'iron axe', 'iron shield', 'bubble']
 
-categoryL = ['Weapon', 'Armor', 'Jewels']
+categoryL = ['Weapon', 'Jewels', 'Head', 'Chest', 'Pants', 'Arms', 'Legs']
 
 prices = [2, 2, 1, 5, 5, 1]
 
@@ -29,7 +29,7 @@ class Item:
 class Equipment(Item):
     def __init__(self, name, description, price, category, mini_level, power, effect):
         super().__init__(name, description, price)
-        self.type = category
+        self.category = category
         self.mini_level = mini_level
         self.power = power
         self.dodge_chance = 0

@@ -14,7 +14,7 @@ categoryL = ["Player", "Monster", "Merchant"]
 
 class Character:
 
-    def __init__(self, name="Mob", category = "None", health=10, strength=5, position=[0, 0]):
+    def __init__(self, name="Mob", category="None", health=10, strength=5, position=[0, 0]):
         self.name = name
         self.category = category
         self.strength = strength
@@ -57,7 +57,9 @@ class Character:
             elif self.category == "Monster":
                 spell = random.randint(1, len(self.spells))
 
-            if self.spells[spell][1][3] < self.magic_point or self.spells[i][1][2] != 0:
+            spell = int(spell)
+
+            if self.spells[spell][1][3] < self.magic_point or self.spells[spell][1][2] != 0:
                 print(self.name + " uses half assed attack")
                 target.defence(self.damage_output[0])
                 return
@@ -127,12 +129,12 @@ class Character:
 
     def show_loot(self):
         inv = self.inventory.inventory
-        for i in inv.keys():
-            print(i.name + "(" + inv[i] + "x)")
-        print("Golds : " + self.inventory.gold)
+        for i in list(inv.keys()):
+            print(i.name + " (x" + str(inv[i]) + ")")
+        print("Golds : " + str(self.inventory.gold))
 
     def obtain(self, inv):
-        for i in inv.keys():
+        for i in list(inv.inventory.keys()):
             if i in self.inventory.inventory:
                 self.inventory.inventory[i] += inv.inventory[i]
             else:
