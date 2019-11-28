@@ -121,11 +121,7 @@ class Game:
                                         player.inventory.inventory[i] -= int_quant
                                         player.inventory.gold += list_prices[n] * int_choice
                                     break
-
-                                
                                 break    
-
-                            
                     break
                 
 
