@@ -88,7 +88,7 @@ class Game:
                                 if len(int_quant) == 1 and 0 < int(int_quant) < list_quant[int_quant-1]:
                                     if player.inventory.gold >= list_prices[n] * int_choice:
                                     i = list(merchant.inventory.keys())[int_item]
-                                        if i in self.inventory.inventory:
+                                        if i in player.inventory.inventory:
                                             player.inventory.inventory[i] += int_quant
                                         else:
                                             player.inventory.inventory[i] = int_quant
