@@ -27,19 +27,22 @@ class Item:
 
 
 class Equipment(Item):
-    # TODO condition sur category
-    def __init__(self, name, description, price, category, mini_level, power, shield):
+    def __init__(self, name, description, price, category, mini_level, power, effect):
         super().__init__(name, description, price)
         self.type = category
         self.mini_level = mini_level
         self.power = power
-        self.shield = shield
         self.dodge_chance = 0
         self.parry_chance = 0
-        self.critic_chance = 0
+        self.special_trait = [0, 0]
+        self.special_stats = [0, 0]
+        self.effect = effect
 
 
 class Consumable(Item):
     def __init__(self, name, description, price, effect):
         super().__init__(name, description, price)
         self.effect = effect
+
+    def used(self):
+        self.effect()
