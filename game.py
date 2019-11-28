@@ -53,3 +53,89 @@ class Game:
                 print("What do you want to equip ? (0 : nothing")
                 while True:
                     
+    def trade_display (player, merchant):
+        test = True
+        while test:
+            print("Hello brave adventurer do you want to do some business with me ?")
+            print("1) Buy")
+            print("2) Sell")
+            print("0) Leave")
+            
+            while True:
+                int_choice = input()
+                if len(int_choice) == 1 and 0 <= int(view_choice) < 3:
+                    if int_choice == 0:
+                        test = False
+                        break
+                    elif int_choice == 1:
+                        while True:
+                            n = 1
+                            list_quant = []
+                            list_prices = []
+                            for i in merchant.inventory.inventory.keys():
+                                print(n  + ')' , i.name , "unit price :", i.price, "disp : x" + inv[i])
+                                list_quant.append(inv[i])
+                                list_prices.append(inv[i])
+                                n += 1
+
+                            print("0) Leave")
+
+                            print("Which one do you want to buy ?")
+                            int_item = input()
+                            if len(int_item) == 1 and 0 <= int(int_item) < n:
+                                print("How many do you want ?")
+                                int_quant = input()
+                                if len(int_quant) == 1 and 0 < int(int_quant) < list_quant[int_quant-1]:
+                                    if player.inventory.gold >= list_prices[n] * int_choice:
+                                    i = list(merchant.inventory.keys())[int_item]
+                                        if i in self.inventory.inventory:
+                                            player.inventory.inventory[i] += int_quant
+                                        else:
+                                            player.inventory.inventory[i] = int_quant
+                                        merchant.inventory.inventory[i] -= int_quant
+                                        player.inventory.gold -= list_prices[n] * int_choice
+                                    break
+                                break
+                            
+                        elif int_choice == 2:
+
+                            n = 1
+                            list_quant = []
+                            list_prices = []
+                            for i in player.inventory.inventory.keys():
+                                print(n  + ')' , i.name , "unit price :", i.price, "disp : x" + inv[i])
+                                list_quant.append(inv[i])
+                                list_prices.append(inv[i])
+                                n += 1
+
+                            print("0) Leave")
+
+                            print("Which one do you want to sell ?")
+                            int_item = input()
+                            if len(int_choice) == 1 and 0 <= int(int_item) < n:
+                                print("How many do you want sell ?")
+                                int_quant = input()
+                                if len(int_choice) == 1 and 0 < int(int_quant) < list_quant[int_item]:
+                                    if player.inventory.gold >= list_prices[n] * int_choice:
+                                    i = list(player.inventory.keys())[int_item]
+                                        player.inventory.inventory[i] -= int_quant
+                                        player.inventory.gold += list_prices[n] * int_choice
+                                    break
+
+                                
+                                break    
+
+                            
+                    break
+                
+
+
+
+
+
+                
+                
+
+
+
+        
