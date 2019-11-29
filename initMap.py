@@ -14,7 +14,17 @@ class Generator:
 
     def __init__(self, width=80, height=70, max_rooms=4, min_room_xy=3, max_room_xy=10,
                  rooms_overlap=False, random_connections=1, random_spurs=5, tiles=CHARACTER_TILES):
-
+        """
+        :param width:
+        :param height:
+        :param max_rooms:
+        :param min_room_xy:
+        :param max_room_xy:
+        :param rooms_overlap:
+        :param random_connections:
+        :param random_spurs:
+        :param tiles:
+        """
         self.width = width
         self.height = height
         self.max_rooms = max_rooms
@@ -412,9 +422,7 @@ class Generator:
         """
         for i in range(pos[1] - 1, pos[1] + 2):
             temp = list(copy.deepcopy(self.map_player[i]))
-            print(temp)
             for j in range(pos[0] - 1, pos[0] + 2):
-                print(temp[j])
                 if not (i == pos[1] and j == pos[0]):
                     temp[j] = self.tiles_level[i][j]
             self.map_player[i] = "".join(temp)
@@ -428,9 +436,7 @@ class Generator:
         """
         for i in range(room[1] - 1, room[1] + room[3] + 1):
             temp = list(copy.deepcopy(self.map_player[i]))
-            print(temp)
             for j in range(room[0] - 1, room[0] + room[2] + 1):
-                print(temp[j], self.map_player[i])
                 if not (i == pos[1] and j == pos[0]):
                     temp[j] = self.tiles_level[i][j]
 
@@ -500,9 +506,10 @@ if __name__ == '__main__':
     coord = gen.new_map_player()
     print(coord)
     while True:
+        
+        gen.display_map()
+        gen.display_map_player()
         x = int(input("Entrer l'avancé selon x"))
         y = int(input("Entrer l'avancé selon y"))
         gen.move_to(coord, [x, y])
         coord = [coord[0] + x, coord[1] + y]
-        gen.display_map()
-        gen.display_map_player()
