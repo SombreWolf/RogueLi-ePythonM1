@@ -27,7 +27,6 @@ class Character:
         self.critic_chance = random.randint(0, 5)
         self.magic_point = 0
         self.magic_point_max = 0
-        self.damage_output = [strength//2, strength, 2 * strength]
         self.armor_point = 0
         self.level = 1
         self.exp = exp
@@ -69,7 +68,7 @@ class Character:
 
             if self.spells[spell][1][3] < self.magic_point or self.spells[spell][1][2] != 0:
                 print(self.name + " uses half assed attack")
-                target.defence(self.damage_output[0])
+                target.defence(self.strength // 2)
                 return
             if self.spells[spell][1][3] != 0:
                 self.magic_point -= self.spells[spell][1][3]
@@ -86,11 +85,11 @@ class Character:
                 is_critic = critic[random.randint(0, 99)]
                 if is_critic:
                     print(self.name + " uses " + self.spells[spell][0] + " critic!")
-                    target.defence(self.spells[spell][1][0] * self.damage_output[2])
+                    target.defence(self.spells[spell][1][0] * self.strength * 2)
                     return
                 else:
                     print(self.name + " uses " + self.spells[spell][0])
-                    target.defence(self.spells[spell][1][0] * self.damage_output[1])
+                    target.defence(self.spells[spell][1][0] * self.strength)
                     return
 
     def defence(self, damage):
@@ -137,7 +136,6 @@ class Character:
             self.magic_point += 5
             self.armor_point += 3
             self.strength += 3
-            self.damage_output = [self.strength // 2, self.strength, 2 * self.strength]
             gap = 3 ** self.level
             up = True
         if up:
