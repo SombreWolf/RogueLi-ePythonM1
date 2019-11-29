@@ -92,8 +92,13 @@ class Character:
         if dodge[random.randint(0, 99)]:
             print(self.name + " dodges the attack")
         elif parry[random.randint(0, 99)]:
-            print(self.name + " parries the attack and suffer " + str(int(0.7*damage)))
-            self.health -= int(0.7*damage)
+            print(self.name + " parries the attack and suffer " + str(30*damage//100) #si pb *32 //128 rester en binaire
+            if self.shield_point - (30*damage//100) < 0:
+                  self.health += self.shield_point - (30*damage//100)
+                  
+            else:
+                  self.shield_point -= (30*damage//100)
+            
             self.alive = (self.health > 0)
         else:
             print(self.name + " suffer " + str(damage))
@@ -105,6 +110,7 @@ class Character:
         aff = ""
         for i in list(equipments):
             aff += i + " - " + equipments[i] + "\n"
+
         return aff
 
     def show_exp(self):
