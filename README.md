@@ -5,7 +5,7 @@ Small Rague Li-e Game in Python
 
 ##Installation
 * It is important to keep all the folders in the same path as the .py files
-* The bdd used the library pickle to save objects and to load them
+* The bdd used the library pickle to save objects and to load them, we also use sqlite3
 * We use also the library platform
 
 

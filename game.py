@@ -3,6 +3,7 @@ import os
 import character as ch
 import initMap as gen
 import item as it
+import sqlite3
 
 # TODO BDD general stats
 
@@ -19,15 +20,20 @@ class Game:
 
     def fight(self, opponent1: ch.Character, opponent2: ch.Character):
         print(opponent1.name + " engages " + opponent2.name)
+        block_shield = opponent1.shield_point
+        skills = opponent1.spells
         while True:
             print(opponent1.name + ": " + str(opponent1.health) + "\t\t\t\t" + opponent2.name + ": " + str(
                 opponent2.health))
+
             opponent1.attacks(opponent2)
             if not opponent2.alive:
                 break
+
             opponent2.attacks(opponent1)
             if not opponent1.alive:
                 break
+
         if not opponent2.alive:
             print("You win")
             print("Butin:")
@@ -35,6 +41,8 @@ class Game:
             opponent1.level_up(opponent2.exp)
             opponent2.show_loot()
             opponent1.obtain(opponent2.inventory)
+            opponent1.shield_point = block_shield
+            opponent1.spells = skills
             input()
 
     def inventory_view(self, someone: ch.Character):
