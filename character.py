@@ -8,20 +8,19 @@ categoryL = ["Player", "Monster", "Merchant"]
 class Character:
 
     def __init__(self, name="Mob", category="None", health=10, strength=5, position=[0, 0], inventory=inv.Inventory(),
-                 exp=10):
+        exp=10, shield=0, dodge=0, parry=0, critic=random.randint(0, 5), magic_point=0, armor=1, level=1,
+        book={"Basic attack": [1, 0, 0, 0], "Punch": [2, 1, 0, 0]},
+        spells={1: ["Basic attack", [1, 0, 0, 0]], 2: None, 3: None, 4: None}):
         """
 
         :param name:
         :param category:
         :param health:
         :param strength:
-        :param position:
+        param position:
         :param inventory:
         :param exp:
         """
-                 exp=10, shield=0, dodge=0, parry=0, critic=random.randint(0, 5), magic_point=0, armor=1, level=1,
-                 book={"Basic attack": [1, 0, 0, 0], "Punch": [2, 1, 0, 0]},
-                 spells={1: ["Basic attack", [1, 0, 0, 0]], 2: None, 3: None, 4: None}):
         self.name = name
         self.category = category
         self.strength = strength

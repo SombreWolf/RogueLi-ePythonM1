@@ -90,12 +90,10 @@ class Generator:
             # NOTE: Never randomly choose a join that will go out of bounds
             # when the walls are added.
             join = None
-            if join_type is 'either' and set([0, 1]).intersection(
-                    set([x1, x2, y1, y2])):
+            if join_type is 'either' and set([0, 1]).intersection(set([x1, x2, y1, y2])):
                 join = 'bottom'
 
-            elif join_type is 'either' and set([self.width - 1,
-                                                self.width - 2]).intersection(set([x1, x2])) or set(
+            elif join_type is 'either' and set([self.width - 1, self.width - 2]).intersection(set([x1, x2])) or set(
                 [self.height - 1, self.height - 2]).intersection(set([y1, y2])):
                 join = 'top'
 
@@ -510,5 +508,5 @@ if __name__ == '__main__':
         gen.display_map_player()
         x = int(input("Entrer l'avancé selon x"))
         y = int(input("Entrer l'avancé selon y"))
-        gen.move_to(coord, [x, y])
+        gen.move_to_player(coord, [x, y])
         coord = [coord[0] + x, coord[1] + y]
