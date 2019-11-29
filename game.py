@@ -1,3 +1,5 @@
+import platform
+import os
 import character as ch
 import initMap as gen
 import item as it
@@ -27,7 +29,6 @@ class Game:
             if not opponent1.alive:
                 break
         if not opponent2.alive:
-            # golds +> item
             print("You win")
             print("Butin:")
             opponent2.show_exp()
@@ -36,7 +37,7 @@ class Game:
             opponent1.obtain(opponent2.inventory)
             input()
 
-    def inventory_view(self, someone):
+    def inventory_view(self, someone: ch.Character):
         again = True
         print("What do you want to do?")
         print("1) Your inventory")
@@ -85,12 +86,16 @@ class Game:
                                     break
                             if slot_choice == 1:
                                 if isinstance(someone.inventory.slots['right hand'], it.Item):
+                                    someone.unequip(someone.inventory.slots['right hand'])
                                     someone.inventory.slots['right hand'].equiped = False
                                 someone.inventory.slots['right hand'] = item
+                                someone.equip(item)
                             elif slot_choice == 2:
                                 if isinstance(someone.inventory.slots['left hand'], it.Item):
+                                    someone.unequip(someone.inventory.slots['left hand'])
                                     someone.inventory.slots['left hand'].equiped = False
                                 someone.inventory.slots['left hand'] = item
+                                someone.equip(item)
                         elif item.category == "Jewels":
                             print("In which slot do you want to equip it?")
                             print("1) Right Hand, 2) Left Hand")
@@ -101,16 +106,22 @@ class Game:
                                     break
                             if slot_choice == 1:
                                 if isinstance(someone.inventory.slots['right jewel'], it.Item):
+                                    someone.unequip(someone.inventory.slots['right jewel'])
                                     someone.inventory.slots['right jewel'].equiped = False
                                 someone.inventory.slots['right jewel'] = item
+                                someone.equip(item)
                             elif slot_choice == 2:
                                 if isinstance(someone.inventory.slots['left jewel'], it.Item):
+                                    someone.unequip(someone.inventory.slots['left jewel'])
                                     someone.inventory.slots['left jewel'].equiped = False
                                 someone.inventory.slots['left jewel'] = item
+                                someone.equip(item)
                         else:
                             if isinstance(someone.inventory.slots[item.category], it.Item):
+                                someone.unequip(someone.inventory.slots[item.category])
                                 someone.inventory.slots[item.category].equiped = False
                             someone.inventory.slots[item.category] = item
+                            someone.equip(item)
         elif view_choice == 2:
             slots = ['left hand', 'right hand', 'left jewel', 'right jewel', 'head', 'chest', 'pants', 'arms', 'legs']
             someone.show_slots()
@@ -126,6 +137,9 @@ class Game:
             if eq_choice == 0:
                 pass
             else:
+                if isinstance(someone.inventory.slots[slots[eq_choice]], it.Item):
+                    someone.unequip(someone.inventory.slots[slots[eq_choice]])
+                    someone.inventory.slots[slots[eq_choice]].equiped = False
                 someone.inventory.slots[slots[eq_choice]] = '-'
         elif view_choice == 3:
             someone.view_stats()
@@ -214,15 +228,64 @@ class Game:
                                     break
                                 break
                     break
-                
 
+    def change_skills(self, player):
+        test = True
+        while test:
+            print("Your current skills in use :")
+            n = 1
+            name_list_spell = []
+            for i in player.spells.keys():
+                if player.spells[i] is None:
+                    pass
+                else:
+                    name_spell = player.spells[i][0]
+                    stat_spell = player.spells[i][1]
+                    print(str(i) + ")", name_spell, "cost:", str(stat_spell[3]), "cd :",
+                          str(stat_spell[1]))
+                    name_list_spell.append(name_spell)
+                    n += 1
 
+            for i in range(n, 5):
+                print(str(i) + ")")
+            print("What would you want to do ?")
+            print("1) Change your skill 1)")
+            print("2) Change your skill 2)")
+            print("3) Change your skill 3)")
+            print("4) Change your skill 4)")
+            print("0) Leave")
+            int_choice = input()
 
+            if len(int_choice) == 1 and 0 <= int(int_choice) < 5:
+                if int(int_choice) == 0:
+                    test = False
 
+                else:
+                    n = 1
 
-                
-                
+                    for j in player.book.keys():
+                        if j in name_list_spell:
+                            print(str(n) + ")", j, "cost:", str(player.book[j][3]), "cd :", str(player.book[j][1]), "(eq)")
 
+                        else:
+                            print(str(n) + ")", j, "cost:", str(player.book[j][3]), "cd :", str(player.book[j][1]))
+                        n += 1
 
+                    print("Which spell do you want to use now ?")
+                    int_spell = input()
+                    i = list(player.book.keys())
+                    if len(int_choice) == 1 and 0 < int(int_choice) <= len(i):
+                        print(player.book[i[int(int_spell)-1]])
+                        player.spells[int(int_choice)] = [i[int(int_spell)-1], player.book[i[int(int_spell)-1]]]
+            self.clear_screen()
 
-        
+    def clear_screen(self):
+        """
+        Clears the terminal screen.
+        """
+
+        # Clear command as function of OS
+        command = "cls" if platform.system().lower() == "windows" else "clear"
+        os.system(command)
+        # Action
+        return  # subprocess.call(command) == 0

@@ -35,28 +35,35 @@ class Character:
         self.inventory = inventory
         self.alive = (self.health > 0)
         self.position = position
-        self.book = {"Basic attack": [1, 0, 0, 0]}
-        self.spells = {1: ["Basic attack", [1, 0, 0, 0]]}
+        self.book = {"Basic attack": [1, 0, 0, 0], "Punch": [2, 1, 0, 0]}
+        self.spells = {1: ["Basic attack", [1, 0, 0, 0]], 2: None, 3: None, 4: None}
 
     def attacks(self, target):
         while target.alive:
             if self.category == "Player":
                 print("You have :" + str(self.magic_point) + " MP")
                 print("What skill do you want to use?")
-                for i in range(1, len(self.spells)+1):
-                    s = str(i)+") "
-                    if self.spells[i][1][3] != 0:
-                        s += "Cost: " + str(self.spells[i][1][3]) + " MP"
-                    if self.spells[i][1][1] != 0:
-                        s += "CD: " + str(self.spells[i][1][2])
-                    print(s)
+                print(self.spells)
+                for i in range(1, 5):
+                    if self.spells[i] is None:
+                        pass
+                    else:
+                        s = str(i) + ") " + self.spells[i][0]
+                        if self.spells[i][1][3] != 0:
+                            s += " Cost: " + str(self.spells[i][1][3]) + " MP"
+                        if self.spells[i][1][1] != 0:
+                            s += " CD: " + str(self.spells[i][1][2]) + '/' + str(self.spells[i][1][1])
+                        print(s)
                 while True:
                     spell = input()
-                    if len(spell) == 1 and 0 < int(spell) < len(self.spells)+1:
+                    if len(spell) == 1 and 0 < int(spell) < len(self.spells)-1:
                         break
                     print("Please choose a correct choice")
             elif self.category == "Monster":
-                spell = random.randint(1, len(self.spells))
+                while True:
+                    spell = random.randint(1, len(self.spells))
+                    if self.spells[spell] is not None:
+                        break
 
             spell = int(spell)
 
@@ -71,7 +78,8 @@ class Character:
                 self.attacks(target)
             if self.spells[spell][1][3] == 0:
                 for i in self.spells:
-                    if self.spells[i][1][1] != self.spells[i][1][2]:
+
+                    if self.spells[i] is not None and self.spells[i][1][1] != self.spells[i][1][2]:
                         self.spells[i][1][2] -= 1
                 self.spells[spell][1][2] = self.spells[spell][1][1]
                 critic = [True for i in range(0, self.critic_chance)] + [False for i in range(0, 100-self.critic_chance)]
@@ -92,10 +100,10 @@ class Character:
         if dodge[random.randint(0, 99)]:
             print(self.name + " dodges the attack")
         elif parry[random.randint(0, 99)]:
-            print(self.name + " parries the attack and suffer " + str(30*damage//100) #si pb *32 //128 rester en binaire
+            print(self.name + " parries the attack and suffer " + str(30*damage//100)) #si pb *32 //128 rester en binaire
             if self.shield_point - (30*damage//100) < 0:
                   self.health += self.shield_point - (30*damage//100)
-                  
+                  self.shield_point = 0
             else:
                   self.shield_point -= (30*damage//100)
             
@@ -110,7 +118,6 @@ class Character:
         aff = ""
         for i in list(equipments):
             aff += i + " - " + equipments[i] + "\n"
-
         return aff
 
     def show_exp(self):
