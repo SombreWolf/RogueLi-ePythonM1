@@ -15,7 +15,7 @@ armors = [0, 1, 0, 0, 2, 0]
 
 class Item:
 
-    def __init__(self, name, description, price):
+    def __init__(self, name, description="", price=0):
         """
         :param name: "self"'s name
         :param description: "self"'s description
@@ -27,22 +27,27 @@ class Item:
 
 
 class Equipment(Item):
-    def __init__(self, name, description, price, category, mini_level, power, effect):
+    def __init__(self, name, description, category, price=1, mini_level=1, power=[0, 0], dodge=0, parry=0, trait=[0, 0], stats=[0, 0]):
         super().__init__(name, description, price)
+        self.equiped = False
         self.category = category
         self.mini_level = mini_level
         self.power = power
-        self.dodge_chance = 0
-        self.parry_chance = 0
-        self.special_trait = [0, 0]
-        self.special_stats = [0, 0]
-        self.effect = effect
+        self.dodge_chance = dodge
+        self.parry_chance = parry
+        self.special_trait = trait
+        self.special_stats = stats
 
 
 class Consumable(Item):
     def __init__(self, name, description, price, effect):
+
         super().__init__(name, description, price)
         self.effect = effect
 
     def used(self):
         self.effect()
+
+
+def none():
+    pass

@@ -1,4 +1,5 @@
-import inventory
+import item as it
+import inventory as inv
 import random
 
 pieces = ['head',
@@ -14,7 +15,7 @@ categoryL = ["Player", "Monster", "Merchant"]
 
 class Character:
 
-    def __init__(self, name="Mob", category="None", health=10, strength=5, position=[0, 0]):
+    def __init__(self, name="Mob", category="None", health=10, strength=5, position=[0, 0], inventory=inv.Inventory(), exp=10):
         self.name = name
         self.category = category
         self.strength = strength
@@ -29,13 +30,13 @@ class Character:
         self.damage_output = [strength//2, strength, 2 * strength]
         self.armor_point = 0
         self.level = 1
-        self.exp = 0
+        self.exp = exp
         self.exp_tot = 0
-        self.inventory = inventory.Inventory()
+        self.inventory = inventory
         self.alive = (self.health > 0)
         self.position = position
-        self.book = {"Basic attack": [1, 1, 0, 0]}
-        self.spells = {1: ["Basic attack", [1, 1, 1, 0]]}
+        self.book = {"Basic attack": [1, 0, 0, 0]}
+        self.spells = {1: ["Basic attack", [1, 0, 0, 0]]}
 
     def attacks(self, target):
         while target.alive:
@@ -70,17 +71,19 @@ class Character:
                 self.attacks(target)
             if self.spells[spell][1][3] == 0:
                 for i in self.spells:
-                    if i[1][1] != i[1][2]:
-                        i[1][2] -= 1
+                    if self.spells[i][1][1] != self.spells[i][1][2]:
+                        self.spells[i][1][2] -= 1
                 self.spells[spell][1][2] = self.spells[spell][1][1]
                 critic = [True for i in range(0, self.critic_chance)] + [False for i in range(0, 100-self.critic_chance)]
                 is_critic = critic[random.randint(0, 99)]
                 if is_critic:
                     print(self.name + " uses " + self.spells[spell][0] + " critic!")
                     target.defence(self.spells[spell][1][0] * self.damage_output[2])
+                    return
                 else:
                     print(self.name + " uses " + self.spells[spell][0])
                     target.defence(self.spells[spell][1][0] * self.damage_output[1])
+                    return
 
     def defence(self, damage):
         damage *= 100/(100+self.armor_point)
@@ -90,11 +93,11 @@ class Character:
             print(self.name + " dodges the attack")
         elif parry[random.randint(0, 99)]:
             print(self.name + " parries the attack and suffer " + str(int(0.7*damage)))
-            self.health -= damage
+            self.health -= int(0.7*damage)
             self.alive = (self.health > 0)
         else:
             print(self.name + " suffer " + str(damage))
-            self.health -= int(0.7 * damage)
+            self.health -= int(damage)
             self.alive = (self.health > 0)
 
     def aff_equipment(self):
@@ -111,7 +114,7 @@ class Character:
         up = False
         self.exp += exp
         self.exp_tot += exp
-        gap = 3**self.level
+        gap = 3 ** self.level
         while self.exp >= gap:
             self.exp -= gap
             self.level += 1
@@ -122,21 +125,73 @@ class Character:
             self.armor_point += 3
             self.strength += 3
             self.damage_output = [self.strength // 2, self.strength, 2 * self.strength]
+            gap = 3 ** self.level
             up = True
         if up:
             print("You level up!")
             print("Your level is now " + str(self.level))
 
     def show_loot(self):
-        inv = self.inventory.inventory
-        for i in list(inv.keys()):
-            print(i.name + " (x" + str(inv[i]) + ")")
+        inventory = self.inventory.inventory
+        for i in list(inventory.keys()):
+            print(i.name + " (x" + str(inventory[i]) + ")")
         print("Golds : " + str(self.inventory.gold))
 
-    def obtain(self, inv):
-        for i in list(inv.inventory.keys()):
+    def obtain(self, inventory):
+        for i in list(inventory.inventory.keys()):
             if i in self.inventory.inventory:
-                self.inventory.inventory[i] += inv.inventory[i]
+                self.inventory.inventory[i] += inventory.inventory[i]
             else:
-                self.inventory.inventory[i] = inv.inventory[i]
-        self.inventory.gold += inv.gold
+                self.inventory.inventory[i] = inventory.inventory[i]
+        self.inventory.gold += inventory.gold
+
+    def show_slots(self):
+        slots = ['left hand', 'right hand', 'left jewel', 'right jewel', 'head', 'chest', 'pants', 'arms', 'legs']
+        for i in list(self.inventory.slots.keys()):
+            if isinstance(self.inventory.slots[i], str):
+                print(str(slots.index(i) + 1) + ") " + i + " : - ")
+            else:
+                print(str(slots.index(i)+1) + ") " + i + " : " + self.inventory.slots[i].name)
+
+    def view_stats(self):
+        print("Your Statistics:")
+        print("HP: " + str(self.health) + "/" + str(self.health_max))
+        print("MP: " + str(self.magic_point) + "/" + str(self.magic_point_max))
+        print("Exp: " + str(self.exp) + "/" + str(3 ** self.level))
+        print("Strenght: " + str(self.strength))
+        print("Armor: " + str(self.armor_point))
+        print("Shield: " + str(self.shield_point))
+        print("Chance of dodge: " + str(self.dodge_chance))
+        print("Chance of parry: " + str(self.parry_chance))
+        print("Chance of critical hit: " + str(self.critic_chance))
+        input()
+
+    def view_success(self):
+        for i in list(self.inventory.success.keys()):
+            string = i + ": "
+            if self.inventory.success[i][0]:
+                string += self.inventory.success[i][1]
+            else:
+                string += "Hidden"
+            print(string)
+        print()
+
+    def equip(self, item: it.Equipment):
+        self.health_max += item.special_stats[0]
+        self.magic_point_max += item.special_stats[1]
+        self.strength += item.power[0]
+        self.armor_point += item.power[1]
+        self.shield_point += item.special_trait[1]
+        self.critic_chance += item.special_trait[0]
+        self.dodge_chance += item.dodge_chance
+        self.parry_chance += item.parry_chance
+
+    def unequip(self, item: it.Equipment):
+        self.health_max -= item.special_stats[0]
+        self.magic_point_max -= item.special_stats[1]
+        self.strength -= item.power[0]
+        self.armor_point -= item.power[1]
+        self.shield_point -= item.special_trait[1]
+        self.critic_chance -= item.special_trait[0]
+        self.dodge_chance -= item.dodge_chance
+        self.parry_chance -= item.parry_chance
