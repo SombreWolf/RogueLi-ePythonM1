@@ -45,10 +45,7 @@ class Game:
         print("3) Your statistics")
         print("4) Your success")
         print("5) Return")
-        while again:
-            view_choice = input()
-            if len(view_choice) == 1 and 0 < int(view_choice) < 6:
-                break
+        view_choice = self.choice(1,5)
         view_choice = int(view_choice)
         if view_choice == 1:
             items = someone.inventory.show()
@@ -57,14 +54,8 @@ class Game:
             elif len(someone.inventory.inventory) > 0:
                 again_inv = True
                 print("What do you want to equip ? (0 : nothing)")
-                while again_inv:
-                    inv_choice = input()
-                    try:
-                        if -1 < int(inv_choice) < len(someone.inventory.inventory)+1:
-                            again_inv = False
-                            inv_choice = int(inv_choice)
-                    except ValueError:
-                        pass
+                inv_choice = self.choice(0, len(someone.inventory.inventory))
+                inv_choice = int(inv_choice)
                 if inv_choice == 0:
                     pass
                 else:
@@ -79,11 +70,8 @@ class Game:
                         if item.category == "Weapon":
                             print("In which slot do you want to equip it?")
                             print("1) Right Hand, 2) Left Hand")
-                            while True:
-                                slot_choice = input()
-                                if len(slot_choice) == 1 and 0 < int(slot_choice) < 3:
-                                    slot_choice = int(slot_choice)
-                                    break
+                            slot_choice = self.choice(1, 2)
+                            slot_choice = int(slot_choice)
                             if slot_choice == 1:
                                 if isinstance(someone.inventory.slots['right hand'], it.Item):
                                     someone.unequip(someone.inventory.slots['right hand'])
@@ -99,11 +87,8 @@ class Game:
                         elif item.category == "Jewels":
                             print("In which slot do you want to equip it?")
                             print("1) Right Hand, 2) Left Hand")
-                            while True:
-                                slot_choice = input()
-                                if len(slot_choice) == 1 and 0 < int(slot_choice) < 3:
-                                    slot_choice = int(slot_choice)
-                                    break
+                            slot_choice = self.choice(1, 2)
+                            slot_choice = int(slot_choice)
                             if slot_choice == 1:
                                 if isinstance(someone.inventory.slots['right jewel'], it.Item):
                                     someone.unequip(someone.inventory.slots['right jewel'])
@@ -126,14 +111,8 @@ class Game:
             slots = ['left hand', 'right hand', 'left jewel', 'right jewel', 'head', 'chest', 'pants', 'arms', 'legs']
             someone.show_slots()
             print("What do you want to unequip ? (0 : nothing)")
-            while True:
-                eq_choice = input()
-                try:
-                    if -1 < int(eq_choice) < 10:
-                        eq_choice = int(eq_choice)-1
-                        break
-                except ValueError:
-                    pass
+            eq_choice = self.choice(0, 9)
+            eq_choice = int(eq_choice) - 1
             if eq_choice == 0:
                 pass
             else:
@@ -153,81 +132,78 @@ class Game:
             print("1) Buy")
             print("2) Sell")
             print("0) Leave")
-            
-            while True:
-                int_choice = input()
-                if len(int_choice) == 1 and 0 <= int(int_choice) < 3:
-                    int_choice = int(int_choice)
-                    if int_choice == 0:
-                        test = False
-                        break
-                    elif int_choice == 1:
-                        while True:
-                            n = 1
-                            list_quant = []
-                            list_prices = []
-                            for i in merchant.inventory.inventory.keys():
-                                print(str(n) + ')', i.name, "unit price :", str(i.price), "disp : x" + str(merchant.inventory.inventory[i]))
-                                list_quant.append(merchant.inventory.inventory[i])
-                                list_prices.append(merchant.inventory.inventory[i])
-                                n += 1
 
-                            print("0) Leave")
+            int_choice = self.choice(0, 2)
+            int_choice = int(int_choice)
+            if int_choice == 0:
+                test = False
+                break
+            elif int_choice == 1:
+                while True:
+                    n = 1
+                    list_quant = []
+                    list_prices = []
+                    for i in merchant.inventory.inventory.keys():
+                        print(str(n) + ')', i.name, "unit price :", str(i.price), "disp : x" + str(merchant.inventory.inventory[i]))
+                        list_quant.append(merchant.inventory.inventory[i])
+                        list_prices.append(merchant.inventory.inventory[i])
+                        n += 1
 
-                            print("Which one do you want to buy ?")
-                            int_item = input()
-                            if len(int_item) == 1 and 0 <= int(int_item) < n:
-                                if int_item == '0':
-                                    pass
-                                else:
-                                    int_item = int(int_item)
-                                    print("How many do you want ?")
-                                    int_quant = input()
-                                    print("A")
-                                    if len(int_quant) == 1 and 0 < int(int_quant) <= list_quant[int(int_item)-1]:
-                                        print("B")
-                                        int_quant = int(int_quant)
-                                        if player.inventory.gold >= list_prices[n-2] * int_choice:
-                                            print("C")
-                                            i = list(merchant.inventory.inventory.keys())[int_item-1]
-                                            if i in player.inventory.inventory:
-                                                player.inventory.inventory[i] += int_quant
-                                            else:
-                                                player.inventory.inventory[i] = int_quant
-                                            merchant.inventory.inventory[i] -= int_quant
-                                            player.inventory.gold -= list_prices[n-2] * int_choice
-                                        break
-                                    break
-                            
-                    elif int_choice == 2:
+                    print("0) Leave")
 
-                        n = 1
-                        list_quant = []
-                        list_prices = []
-                        for i in player.inventory.inventory.keys():
-                            print(str(n)  + ')' , i.name , "unit price :", str(i.price), "disp : x" + str(player.inventory.inventory[i]))
-                            list_quant.append(player.inventory.inventory[i])
-                            list_prices.append(player.inventory.inventory[i])
-                            n += 1
-
-                        print("0) Leave")
-
-                        print("Which one do you want to sell ?")
-                        int_item = input()
-                        if len(int_item) == 1 and 0 <= int(int_item) < n:
-                            if int_item == '0':
-                                pass
-                            else:
-                                print("How many do you want sell ?")
-                                int_quant = input()
-                                if len(int_quant) == 1 and 0 < int(int_quant) <= list_quant[int(int_item)-1]:
-                                    if player.inventory.gold >= list_prices[n-2] * int_choice:
-                                        i = list(player.inventory.inventory.keys())[int(int_item)-1]
-                                        player.inventory.inventory[i] -= int(int_quant)
-                                        player.inventory.gold += list_prices[n-2] * int(int_quant)
-                                    break
+                    print("Which one do you want to buy ?")
+                    int_item = input()
+                    if len(int_item) == 1 and 0 <= int(int_item) < n:
+                        if int_item == '0':
+                            pass
+                        else:
+                            int_item = int(int_item)
+                            print("How many do you want ?")
+                            int_quant = input()
+                            print("A")
+                            if len(int_quant) == 1 and 0 < int(int_quant) <= list_quant[int(int_item)-1]:
+                                print("B")
+                                int_quant = int(int_quant)
+                                if player.inventory.gold >= list_prices[n-2] * int_choice:
+                                    print("C")
+                                    i = list(merchant.inventory.inventory.keys())[int_item-1]
+                                    if i in player.inventory.inventory:
+                                        player.inventory.inventory[i] += int_quant
+                                    else:
+                                        player.inventory.inventory[i] = int_quant
+                                    merchant.inventory.inventory[i] -= int_quant
+                                    player.inventory.gold -= list_prices[n-2] * int_choice
                                 break
-                    break
+                            break
+            elif int_choice == 2:
+
+                n = 1
+                list_quant = []
+                list_prices = []
+                for i in player.inventory.inventory.keys():
+                    print(str(n)  + ')' , i.name , "unit price :", str(i.price), "disp : x" + str(player.inventory.inventory[i]))
+                    list_quant.append(player.inventory.inventory[i])
+                    list_prices.append(player.inventory.inventory[i])
+                    n += 1
+
+                print("0) Leave")
+
+                print("Which one do you want to sell ?")
+                int_item = input()
+                if len(int_item) == 1 and 0 <= int(int_item) < n:
+                    if int_item == '0':
+                        pass
+                    else:
+                        print("How many do you want sell ?")
+                        int_quant = input()
+                        if len(int_quant) == 1 and 0 < int(int_quant) <= list_quant[int(int_item)-1]:
+                            if player.inventory.gold >= list_prices[n-2] * int_choice:
+                                i = list(player.inventory.inventory.keys())[int(int_item)-1]
+                                player.inventory.inventory[i] -= int(int_quant)
+                                player.inventory.gold += list_prices[n-2] * int(int_quant)
+                            break
+                        break
+            break
 
     def change_skills(self, player):
         test = True
@@ -254,29 +230,28 @@ class Game:
             print("3) Change your skill 3)")
             print("4) Change your skill 4)")
             print("0) Leave")
-            int_choice = input()
+            int_choice = self.choice(0, 4)
+            if int(int_choice) == 0:
+                test = False
 
-            if len(int_choice) == 1 and 0 <= int(int_choice) < 5:
-                if int(int_choice) == 0:
-                    test = False
+            else:
+                n = 1
 
-                else:
-                    n = 1
+                for j in player.book.keys():
+                    if j in name_list_spell:
+                        print(str(n) + ")", j, "cost:", str(player.book[j][3]), "cd :", str(player.book[j][1]), "(eq)")
 
-                    for j in player.book.keys():
-                        if j in name_list_spell:
-                            print(str(n) + ")", j, "cost:", str(player.book[j][3]), "cd :", str(player.book[j][1]), "(eq)")
+                    else:
+                        print(str(n) + ")", j, "cost:", str(player.book[j][3]), "cd :", str(player.book[j][1]))
+                    n += 1
 
-                        else:
-                            print(str(n) + ")", j, "cost:", str(player.book[j][3]), "cd :", str(player.book[j][1]))
-                        n += 1
+                print("Which spell do you want to use now ?")
 
-                    print("Which spell do you want to use now ?")
-                    int_spell = input()
-                    i = list(player.book.keys())
-                    if len(int_choice) == 1 and 0 < int(int_choice) <= len(i):
-                        print(player.book[i[int(int_spell)-1]])
-                        player.spells[int(int_choice)] = [i[int(int_spell)-1], player.book[i[int(int_spell)-1]]]
+                i = list(player.book.keys())
+                int_spell = self.choice(1, len(i))
+                if len(int_choice) == 1 and 0 < int(int_choice) <= len(i):
+                    print(player.book[i[int(int_spell)-1]])
+                    player.spells[int(int_choice)] = [i[int(int_spell)-1], player.book[i[int(int_spell)-1]]]
             self.clear_screen()
 
     def clear_screen(self):
@@ -289,3 +264,14 @@ class Game:
         os.system(command)
         # Action
         return  # subprocess.call(command) == 0
+
+    def choice(self, start: int, end: int):
+        again = True
+        while again:
+            c = input()
+            try:
+                if start <= int(c) <= end:
+                    again = False
+            except ValueError:
+                pass
+        return c

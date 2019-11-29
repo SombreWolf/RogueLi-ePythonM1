@@ -1,16 +1,6 @@
 import random
 
-items = ['branch', 'wood shield', 'meat', 'iron axe', 'iron shield', 'bubble']
-
 categoryL = ['Weapon', 'Jewels', 'Head', 'Chest', 'Pants', 'Arms', 'Legs']
-
-prices = [2, 2, 1, 5, 5, 1]
-
-equipables = [3, 2, -1, 3, 2, -1]
-
-powers = [1, 0, 0, 2, 0, 0]
-
-armors = [0, 1, 0, 0, 2, 0]
 
 
 class Item:

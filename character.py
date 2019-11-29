@@ -2,40 +2,35 @@ import item as it
 import inventory as inv
 import random
 
-pieces = ['head',
-          'hands',
-          'left hand',
-          'right hand',
-          'upper body',
-          'legs',
-          'feet']
-
 categoryL = ["Player", "Monster", "Merchant"]
 
 
 class Character:
 
-    def __init__(self, name="Mob", category="None", health=10, strength=5, position=[0, 0], inventory=inv.Inventory(), exp=10):
+    def __init__(self, name="Mob", category="None", health=10, strength=5, position=[0, 0], inventory=inv.Inventory(),
+                 exp=10, shield=0, dodge=0, parry=0, critic=random.randint(0, 5), magic_point=0, armor=1, level=1,
+                 book={"Basic attack": [1, 0, 0, 0], "Punch": [2, 1, 0, 0]},
+                 spells={1: ["Basic attack", [1, 0, 0, 0]], 2: None, 3: None, 4: None}):
         self.name = name
         self.category = category
         self.strength = strength
         self.health = health
         self.health_max = health
-        self.shield_point = 0
-        self.dodge_chance = 0
-        self.parry_chance = 0
-        self.critic_chance = random.randint(0, 5)
-        self.magic_point = 0
-        self.magic_point_max = 0
-        self.armor_point = 0
-        self.level = 1
+        self.shield_point = shield
+        self.dodge_chance = dodge
+        self.parry_chance = parry
+        self.critic_chance = critic
+        self.magic_point = magic_point
+        self.magic_point_max = magic_point
+        self.armor_point = armor
+        self.level = level
         self.exp = exp
         self.exp_tot = 0
         self.inventory = inventory
         self.alive = (self.health > 0)
         self.position = position
-        self.book = {"Basic attack": [1, 0, 0, 0], "Punch": [2, 1, 0, 0]}
-        self.spells = {1: ["Basic attack", [1, 0, 0, 0]], 2: None, 3: None, 4: None}
+        self.book = book
+        self.spells = spells
 
     def attacks(self, target):
         while target.alive:
@@ -53,11 +48,8 @@ class Character:
                         if self.spells[i][1][1] != 0:
                             s += " CD: " + str(self.spells[i][1][2]) + '/' + str(self.spells[i][1][1])
                         print(s)
-                while True:
-                    spell = input()
-                    if len(spell) == 1 and 0 < int(spell) < len(self.spells)-1:
-                        break
-                    print("Please choose a correct choice")
+                spell = self.choice(1, 4)
+
             elif self.category == "Monster":
                 while True:
                     spell = random.randint(1, len(self.spells))
@@ -101,8 +93,8 @@ class Character:
         elif parry[random.randint(0, 99)]:
             print(self.name + " parries the attack and suffer " + str(30*damage//100)) #si pb *32 //128 rester en binaire
             if self.shield_point - (30*damage//100) < 0:
-                  self.health += self.shield_point - (30*damage//100)
-                  self.shield_point = 0
+                self.health += self.shield_point - (30*damage//100)
+                self.shield_point = 0
             else:
                   self.shield_point -= (30*damage//100)
             
@@ -206,3 +198,14 @@ class Character:
         self.critic_chance -= item.special_trait[0]
         self.dodge_chance -= item.dodge_chance
         self.parry_chance -= item.parry_chance
+
+    def choice(self, start: int, end: int):
+        again = True
+        while again:
+            c = input()
+            try:
+                if start <= int(c) <= end:
+                    again = False
+            except ValueError:
+                pass
+        return c
