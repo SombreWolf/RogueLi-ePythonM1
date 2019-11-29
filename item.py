@@ -17,6 +17,9 @@ class Item:
 
 
 class Equipment(Item):
+    """
+    function to equip an item
+    """
     def __init__(self, name, description, category, price=1, mini_level=1, power=[1, 0], dodge=0, parry=0, trait=[0, 0], stats=[0, 0]):
         super().__init__(name, description, price)
         self.equiped = False
@@ -30,6 +33,9 @@ class Equipment(Item):
 
 
 class Consumable(Item):
+    """
+    function to use a consumable item
+    """
     def __init__(self, name, description, price, effect):
 
         super().__init__(name, description, price)

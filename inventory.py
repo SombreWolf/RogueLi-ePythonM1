@@ -21,6 +21,7 @@ class Inventory:
     def sort(self) -> None:
         """
         Sort the inventory according to the alphabetical order
+        :return:
         """
         long = len(self.inventory)
         L = [self.inventory.popitem() for _ in range(long)]
@@ -28,12 +29,18 @@ class Inventory:
         self.inventory = {L[i][0]: L[i][1] for i in range(long)}
 
     def show(self):
+        """
+        function to show the inventory
+        :return:
+        """
         items = []
         if len(self.inventory) == 0:
             print("Your inventory is empty")
+
         else:
             for i in list(self.inventory.keys()):
                 items.append(i)
                 print(str(items.index(i)+1) + ")" + i.name + " (x" + str(self.inventory[i]) + ")")
+
         print("Golds : " + str(self.gold))
         return items
