@@ -2,7 +2,6 @@ class Inventory:
 
     def __init__(self, inventory={}, gold=0):
         """
-        
         :param size: The inventory's size
         """
         # {key: nb} where key is the name and nb the number of this item
