@@ -1,3 +1,6 @@
+import platform
+import subprocess
+
 import character as ch
 import initMap as gen
 import item as it
@@ -15,7 +18,9 @@ class Game:
         self.current_map = gen.Generator()
         self.others_entity = []
 
-    def fight(self, opponent1: ch.Character, opponent2: ch.Character):
+    @staticmethod
+    def fight(opponent1: ch.Character, opponent2: ch.Character):
+
         print(opponent1.name + " engages " + opponent2.name)
         while True:
             print(opponent1.name + ": " + str(opponent1.health) + "\t\t\t\t" + opponent2.name + ": " + str(
@@ -153,7 +158,8 @@ class Game:
                             list_quant = []
                             list_prices = []
                             for i in merchant.inventory.inventory.keys():
-                                print(str(n) + ')', i.name, "unit price :", str(i.price), "disp : x" + str(merchant.inventory.inventory[i]))
+                                print(n  + ')', i.name, "unit price :", i.price, "disp : x" +
+                                      merchant.inventory.inventory[i])
                                 list_quant.append(merchant.inventory.inventory[i])
                                 list_prices.append(merchant.inventory.inventory[i])
                                 n += 1
@@ -191,7 +197,8 @@ class Game:
                         list_quant = []
                         list_prices = []
                         for i in player.inventory.inventory.keys():
-                            print(str(n)  + ')' , i.name , "unit price :", str(i.price), "disp : x" + str(player.inventory.inventory[i]))
+                            print(n  + ')' , i.name , "unit price :", i.price, "disp : x" +
+                                  player.inventory.inventory[i])
                             list_quant.append(player.inventory.inventory[i])
                             list_prices.append(player.inventory.inventory[i])
                             n += 1
@@ -215,14 +222,61 @@ class Game:
                                 break
                     break
                 
+    def change_skills(self, player):
 
+        while test:
+            test = True
+            print("Your current skills in use :")
+            n = 1
+            name_list_spell = []
+            for i in player.spells.keys():
+                name_spell = player.spells[i][0]
+                stat_spell = player.spells[i][1]
+                print(str(i) + ")", name_spell, "cost:", stat_spell[3], "cd :",
+                      stat_spell[1])
+                name_list_spell.append(name_spell)
+                n += 1
 
+            for i in range(n - 1, 5):
+                print(i + ")")
+            print("What would you want to do ?")
+            print("1) Change your skill 1)")
+            print("2) Change your skill 2)")
+            print("3) Change your skill 3)")
+            print("4) Change your skill 4)")
+            print("0) Leave")
+            int_choice = input()
 
+            if len(int_choice) == 1 and 0 <= int(int_choice) < 5:
+                if int_choice == 0:
+                    test = False
 
+                else:
+                    n = 1
 
-                
-                
+                    for j in player.book.keys():
+                        if j in name_list_spell:
+                            print(n + ")", j, "cost:", player.book[j][3], "cd :", player.book[j][1],"(eq)")
 
+                        else:
+                            print(n + ")", j, "cost:", player.book[j][3], "cd :", player.book[j][1])
+                        n += 1
 
+                    print("Which spell do you want to use now ?")
+                    int_spell = input()
+                    i = list(player.book.keys())
+                    if len(int_choice) == 1 and 0 <= int(int_choice) < len(i):
+                        player.spells[int_choice] = player.book[i[int_spell]]
+                        break
+            self.clear_screen()
 
-        
+    def clear_screen(self):
+        """
+        Clears the terminal screen.
+        """
+
+        # Clear command as function of OS
+        command = "cls" if platform.system().lower() == "windows" else "clear"
+
+        # Action
+        return subprocess.call(command) == 0
