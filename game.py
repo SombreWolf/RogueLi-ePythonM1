@@ -5,20 +5,40 @@ import initMap as gen
 import item as it
 import sqlite3
 
-# TODO BDD general stats
-
 
 class Game:
-    number_of_game_played = 0
-    number_of_monsters_killed = 0
-    number_of_fight_with_weapon = {}
 
-    def __init__(self):
-        self.player = ch.Character("player", "Player")
+    def __init__(self, bdd, player: ch.Character, list_monster):
+        """
+        initialize the game Object
+        :param bdd:
+        :param player:
+        :param list_monster:
+        """
+        cursor = bdd.cursor()
+        cursor.execute("SELECT valeur FROM GENERAL WHERE name=\"nb_game\"")
+        a = cursor.fetchone()
+        cursor.execute("UPDATE GENERAL SET valeur=? WHERE name=\"nb_game\"", (a[0]+1,))
+        bdd.commit()
+        self.player = player
         self.current_map = gen.Generator()
+        self.current_map.gen_level()
+        self.current_map.gen_tiles_level()
+        self.current_map.init_monster(list_monster)
+        self.current_map.init_exit()
+        self.player.position = self.current_map.new_map_player()
         self.others_entity = []
+        self.level = 1
 
-    def fight(self, opponent1: ch.Character, opponent2: ch.Character):
+    def fight(self, opponent1: ch.Character, opponent2: ch.Character, bdd):
+        """
+        run the fight between 2 characters
+        :param opponent1:
+        :param opponent2:
+        :param bdd:
+        :return:
+        """
+        cursor = bdd.cursor()
         print(opponent1.name + " engages " + opponent2.name)
         block_shield = opponent1.shield_point
         skills = opponent1.spells
@@ -39,21 +59,30 @@ class Game:
             print("Butin:")
             opponent2.show_exp()
             opponent1.level_up(opponent2.exp)
-            opponent2.show_loot()
             opponent1.obtain(opponent2.inventory)
+            cursor.execute("SELECT valeur FROM GENERAL WHERE name=\"nb_kill\"")
+            a = cursor.fetchone()
+            cursor.execute("UPDATE GENERAL SET valeur=? WHERE name=\"nb_kill\"", (a[0] + 1,))
+            bdd.commit()
             opponent1.shield_point = block_shield
             opponent1.spells = skills
             input()
 
     def inventory_view(self, someone: ch.Character):
+        """
+        run the different view of the inventory
+        :param someone:
+        :return:
+        """
         again = True
         print("What do you want to do?")
         print("1) Your inventory")
         print("2) Your equipment")
         print("3) Your statistics")
         print("4) Your success")
-        print("5) Return")
-        view_choice = self.choice(1,5)
+        print("5) Your skills")
+        print("6) Return")
+        view_choice = self.choice(1, 6)
         view_choice = int(view_choice)
         if view_choice == 1:
             items = someone.inventory.show()
@@ -130,10 +159,20 @@ class Game:
                 someone.inventory.slots[slots[eq_choice]] = '-'
         elif view_choice == 3:
             someone.view_stats()
+            input()
         elif view_choice == 4:
             someone.view_success()
+            input()
+        elif view_choice == 5:
+            self.change_skills(self.player)
                     
     def trade_display (self, player, merchant):
+        """
+        run the trade with a merchant
+        :param player:
+        :param merchant:
+        :return:
+        """
         test = True
         while test:
             print("Hello brave adventurer do you want to do some business with me ?")
@@ -168,12 +207,9 @@ class Game:
                             int_item = int(int_item)
                             print("How many do you want ?")
                             int_quant = input()
-                            print("A")
                             if len(int_quant) == 1 and 0 < int(int_quant) <= list_quant[int(int_item)-1]:
-                                print("B")
                                 int_quant = int(int_quant)
                                 if player.inventory.gold >= list_prices[n-2] * int_choice:
-                                    print("C")
                                     i = list(merchant.inventory.inventory.keys())[int_item-1]
                                     if i in player.inventory.inventory:
                                         player.inventory.inventory[i] += int_quant
@@ -214,6 +250,11 @@ class Game:
             break
 
     def change_skills(self, player):
+        """
+        manage the skills
+        :param player:
+        :return:
+        """
         test = True
         while test:
             print("Your current skills in use :")
@@ -262,7 +303,8 @@ class Game:
                     player.spells[int(int_choice)] = [i[int(int_spell)-1], player.book[i[int(int_spell)-1]]]
             self.clear_screen()
 
-    def clear_screen(self):
+    @staticmethod
+    def clear_screen():
         """
         Clears the terminal screen.
         """
@@ -273,7 +315,14 @@ class Game:
         # Action
         return  # subprocess.call(command) == 0
 
-    def choice(self, start: int, end: int):
+    @staticmethod
+    def choice(start: int, end: int):
+        """
+        function to choose a specific number
+        :param start:
+        :param end:
+        :return:
+        """
         again = True
         while again:
             c = input()
@@ -283,3 +332,16 @@ class Game:
             except ValueError:
                 pass
         return c
+
+    def new_level(self, list_monster):
+        """
+        generate the new level
+        :param list_monster:
+        :return:
+        """
+        self.current_map = gen.Generator()
+        self.current_map.gen_level()
+        self.current_map.gen_tiles_level()
+        self.current_map.init_monster(list_monster)
+        self.current_map.init_exit()
+        self.player.position = self.current_map.new_map_player()

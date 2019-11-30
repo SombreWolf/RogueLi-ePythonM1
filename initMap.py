@@ -1,6 +1,7 @@
 from __future__ import print_function
 import random
 import copy
+import character as char
 
 CHARACTER_TILES = {'stone': ' ',
                    'floor': '.',
@@ -346,7 +347,10 @@ class Generator:
         :return:
         """
         for i in monsters:
-            display = i[0].upper()
+            if isinstance(i, char.Character):
+                display = i.name[0]
+            else:
+                display = i
             x, y = random.choice(self.get_void_cases())
             temp = list(self.tiles_level[y])
             temp[x] = display
@@ -487,7 +491,7 @@ class Generator:
         """
         [print(row) for row in self.tiles_level]
 
-
+"""
 if __name__ == '__main__':
 
     gen = Generator()
@@ -510,3 +514,4 @@ if __name__ == '__main__':
         y = int(input("Entrer l'avancé selon y"))
         gen.move_to_player(coord, [x, y])
         coord = [coord[0] + x, coord[1] + y]
+"""

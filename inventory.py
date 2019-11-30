@@ -1,6 +1,6 @@
 class Inventory:
 
-    def __init__(self, inventory={}, gold=0, success={"First Game":[True, "Launch your first game"], "Killer":[False, "Kill 50 monster"]}):
+    def __init__(self, inventory={}, gold=0, success={"First Game":[True, "Launch your first game"], "Killer":[False, "Kill 50 monsters"]}):
         """
         :param size: The inventory's size
         """

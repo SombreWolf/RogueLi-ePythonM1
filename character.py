@@ -7,7 +7,7 @@ categoryL = ["Player", "Monster", "Merchant"]
 
 class Character:
 
-    def __init__(self, name="Mob", category="None", health=10, strength=5, position=[0, 0], inventory=inv.Inventory(),
+    def __init__(self, name="Mob", category="None", health=10, strenght=5, position=[0, 0], inventory=inv.Inventory(),
         exp=10, shield=0, dodge=0, parry=0, critic=random.randint(0, 5), magic_point=0, armor=1, level=1,
         book={"Basic attack": [1, 0, 0, 0], "Punch": [2, 1, 0, 0]},
         spells={1: ["Basic attack", [1, 0, 0, 0]], 2: None, 3: None, 4: None}):
@@ -16,14 +16,14 @@ class Character:
         :param name:
         :param category:
         :param health:
-        :param strength:
+        :param strenght:
         param position:
         :param inventory:
         :param exp:
         """
         self.name = name
         self.category = category
-        self.strength = strength
+        self.strength = strenght
         self.health = health
         self.health_max = health
         self.shield_point = shield
@@ -52,7 +52,6 @@ class Character:
             if self.category == "Player":
                 print("You have :" + str(self.magic_point) + " MP")
                 print("What skill do you want to use?")
-                print(self.spells)
                 for i in range(1, 5):
                     if self.spells[i] is None:
                         pass
@@ -74,7 +73,7 @@ class Character:
 
             spell = int(spell)
 
-            if self.spells[spell][1][3] < self.magic_point or self.spells[spell][1][2] != 0:
+            if self.spells[spell][1][3] > self.magic_point or self.spells[spell][1][2] != 0:
                 print(self.name + " uses half assed attack")
                 target.defence(self.strength // 2)
                 return
@@ -118,11 +117,11 @@ class Character:
         elif parry[random.randint(0, 99)]:
             print(self.name + " parries the attack and suffer " + str(32*damage//128))#si pb *32 //128 rester en binaire
             if self.shield_point - (32*damage//128) < 0:
-                  self.health += self.shield_point - (30*damage//100)
+                  self.health += self.shield_point - (32*damage//128)
                   self.shield_point = 0
 
             else:
-                  self.shield_point -= (30*damage//100)
+                  self.shield_point -= (32*damage//128)
             
             self.alive = (self.health > 0)
 
