@@ -18,3 +18,4 @@ Small Rague Li-e Game in Python
 * The cases were you can move without interactions are the char '.'
 * The case to change level of map is represented by the char '▓'
 * All others characters will be monsters
+* You only have one save and until you die you will not reset
