@@ -19,3 +19,4 @@ Small Rague Li-e Game in Python
 * The case to change level of map is represented by the char '▓'
 * All others characters will be monsters
 * You only have one save and until you die you will not reset
+* Merchants have been used to the dungeon and so they will only reveal themselfs when the player is at 1 case of them.
